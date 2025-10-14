@@ -351,39 +351,80 @@
     function updateIframe(){
     const doc = iframe.contentDocument || iframe.contentWindow.document;
     if(!doc) return;
+
+    // Campos fijos
     if(doc.getElementById("logo")) doc.getElementById("logo").src = document.getElementById("tplLogo").value;
     if(doc.getElementById("hero")) doc.getElementById("hero").textContent = document.getElementById("tplHero").value;
     if(doc.getElementById("desc")) doc.getElementById("desc").textContent = document.getElementById("tplDesc").value;
     if(doc.getElementById("horario")) doc.getElementById("horario").textContent = document.getElementById("tplHorario").value;
     if(doc.getElementById("tel")) doc.getElementById("tel").textContent = document.getElementById("tplTel").value;
     if(doc.getElementById("correo")) doc.getElementById("correo").textContent = document.getElementById("tplCorreo").value;
-    if(doc.getElementById("galeria")){
-      const gal = doc.getElementById("galeria");
-      gal.innerHTML = "";
-      for(let i=1;i<=6;i++){
-        const val = document.getElementById("tplImg"+i).value.trim();
-        if(val) gal.innerHTML += `<img src="${val}" style="width:100px;margin:2px;">`;
-      }
-      const extraInputs = document.querySelectorAll(".extra-img");
-      extraInputs.forEach(inp=>{
-        if(inp.value.trim()) gal.innerHTML += `<img src="${inp.value.trim()}" style="width:100px;margin:2px;">`;
-      });
-    }
-  }
 
-  document.querySelectorAll("#tplLogo,#tplHero,#tplDesc,#tplHorario,#tplTel,#tplCorreo,#tplImg1,#tplImg2,#tplImg3,#tplImg4,#tplImg5,#tplImg6")
+    // Galería
+    const gal = doc.getElementById("galeria");
+    if(gal){
+        gal.innerHTML = "";
+
+        // Imágenes fijas 1-6
+        for(let i=1;i<=6;i++){
+            const imgVal = document.getElementById("tplImg"+i).value.trim();
+            const titleVal = document.getElementById("tplImg"+i+"Title")?.value.trim() || "";
+            if(imgVal){
+                gal.innerHTML += `
+                    <div class="gallery-item animate-on-scroll">
+                        <img src="${imgVal}" style="width:100px;margin:2px;">
+                        <div class="gallery-overlay"><h3>${titleVal}</h3></div>
+                    </div>
+                `;
+            }
+        }
+
+        // Imágenes extras
+        const extraImgs = document.querySelectorAll(".extra-img");
+        extraImgs.forEach((inp,index)=>{
+            const val = inp.value.trim();
+            const titleInp = document.getElementById("img"+(index+7)+"Title");
+            const titleVal = titleInp ? titleInp.value.trim() : "";
+            if(val){
+                gal.innerHTML += `
+                    <div class="gallery-item animate-on-scroll">
+                        <img src="${val}" style="width:100px;margin:2px;">
+                        <div class="gallery-overlay"><h3>${titleVal}</h3></div>
+                    </div>
+                `;
+            }
+        });
+    }
+}
+
+// Eventos de input
+document.querySelectorAll("#tplLogo,#tplHero,#tplDesc,#tplHorario,#tplTel,#tplCorreo,#tplImg1,#tplImg2,#tplImg3,#tplImg4,#tplImg5,#tplImg6")
     .forEach(inp=>inp.addEventListener("input", updateIframe));
 
-  document.getElementById("addMoreImages").addEventListener("click", ()=>{
-    const newInput = document.createElement("input");
-    newInput.type = "text";
-    newInput.placeholder = "Nueva imagen";
-    newInput.classList.add("extra-img");
-    newInput.style.width="100%";
-    newInput.style.marginBottom="4px";
-    document.getElementById("addMoreImages").insertAdjacentElement("beforebegin", newInput);
-    newInput.addEventListener("input", updateIframe);
-  });
+// Agregar más imágenes + títulos
+document.getElementById("addMoreImages").addEventListener("click", ()=>{
+    const newImgInput = document.createElement("input");
+    newImgInput.type = "text";
+    newImgInput.placeholder = "Nueva imagen";
+    newImgInput.classList.add("extra-img");
+    newImgInput.style.width="100%";
+    newImgInput.style.marginBottom="4px";
+
+    const newTitleInput = document.createElement("input");
+    newTitleInput.type = "text";
+    newTitleInput.placeholder = "Nombre del platillo";
+    newTitleInput.classList.add("extra-title");
+    newTitleInput.style.width="100%";
+    newTitleInput.style.marginBottom="4px";
+
+    const addBtn = document.getElementById("addMoreImages");
+    addBtn.insertAdjacentElement("beforebegin", newTitleInput);
+    addBtn.insertAdjacentElement("beforebegin", newImgInput);
+
+    newImgInput.addEventListener("input", updateIframe);
+    newTitleInput.addEventListener("input", updateIframe);
+});
+
 
   document.getElementById("tplCopy").addEventListener("click", ()=>{
     const doc = iframe.contentDocument || iframe.contentWindow.document;
@@ -795,5 +836,6 @@ if(navbarCard){
   </script>
 </body>
 </html>
+
 
 
