@@ -372,71 +372,78 @@
     if(doc.getElementById("tel")) doc.getElementById("tel").textContent = document.getElementById("tplTel").value;
     if(doc.getElementById("correo")) doc.getElementById("correo").textContent = document.getElementById("tplCorreo").value;
 
-    // Galería
-    const gal = doc.getElementById("galeria");
-    if(gal){
-        gal.innerHTML = "";
+  function updateGallery(){
+    const gal = document.getElementById("galeria");
+    if(!gal) return;
+    gal.innerHTML = "";
 
-        // Imágenes fijas 1-6
-        for(let i=1;i<=6;i++){
-            const imgVal = document.getElementById("tplImg"+i).value.trim();
-            const titleVal = document.getElementById("tplImg"+i+"Title")?.value.trim() || "";
-            if(imgVal){
-                gal.innerHTML += `
-                    <div class="gallery-item animate-on-scroll">
-                        <img src="${imgVal}" style="width:100px;margin:2px;">
-                        <div class="gallery-overlay"><h3>${titleVal}</h3></div>
-                    </div>
-                `;
-            }
+    // Imágenes fijas 1-6
+    for(let i=1;i<=6;i++){
+        const imgVal = document.getElementById("tplImg"+i)?.value.trim();
+        const titleVal = document.getElementById("tplImg"+i+"Title")?.value.trim() || "";
+        if(imgVal){
+            gal.innerHTML += `
+                <div class="gallery-item animate-on-scroll">
+                    <img src="${imgVal}" style="width:100px;margin:2px;">
+                    <div class="gallery-overlay"><h3>${titleVal}</h3></div>
+                </div>
+            `;
         }
-
-        // Imágenes extras
-        const extraImgs = document.querySelectorAll(".extra-img");
-        extraImgs.forEach((inp,index)=>{
-            const val = inp.value.trim();
-            const titleInp = document.getElementById("img"+(index+7)+"Title");
-            const titleVal = titleInp ? titleInp.value.trim() : "";
-            if(val){
-                gal.innerHTML += `
-                    <div class="gallery-item animate-on-scroll">
-                        <img src="${val}" style="width:100px;margin:2px;">
-                        <div class="gallery-overlay"><h3>${titleVal}</h3></div>
-                    </div>
-                `;
-            }
-        });
     }
+
+    // Imágenes extras
+    const extraImgs = document.querySelectorAll(".extra-img");
+    extraImgs.forEach((inp,index)=>{
+        const val = inp.value.trim();
+        const titleInp = document.querySelectorAll(".extra-title")[index];
+        const titleVal = titleInp ? titleInp.value.trim() : "";
+        if(val){
+            gal.innerHTML += `
+                <div class="gallery-item animate-on-scroll">
+                    <img src="${val}" style="width:100px;margin:2px;">
+                    <div class="gallery-overlay"><h3>${titleVal}</h3></div>
+                </div>
+            `;
+        }
+    });
 }
+
+// Eventos de imágenes fijas
+for(let i=1;i<=6;i++){
+    const imgInput = document.getElementById("tplImg"+i);
+    const titleInput = document.getElementById("tplImg"+i+"Title");
+    if(imgInput) imgInput.addEventListener("input", updateGallery);
+    if(titleInput) titleInput.addEventListener("input", updateGallery);
+}
+
+// Botón para agregar imágenes extras
+document.getElementById("addMoreImages").addEventListener("click", ()=>{
+    const container = document.getElementById("addMoreImages");
+
+    const newImg = document.createElement("input");
+    newImg.type = "text";
+    newImg.placeholder = "Nueva imagen";
+    newImg.classList.add("extra-img");
+    newImg.style.width="100%";
+    newImg.style.marginBottom="4px";
+
+    const newTitle = document.createElement("input");
+    newTitle.type = "text";
+    newTitle.placeholder = "Nombre del platillo";
+    newTitle.classList.add("extra-title");
+    newTitle.style.width="100%";
+    newTitle.style.marginBottom="4px";
+
+    container.insertAdjacentElement("beforebegin", newTitle);
+    container.insertAdjacentElement("beforebegin", newImg);
+
+    newImg.addEventListener("input", updateGallery);
+    newTitle.addEventListener("input", updateGallery);
+});
 
 // Eventos de input
 document.querySelectorAll("#tplLogo,#tplHero,#tplDesc,#tplHorario,#tplTel,#tplCorreo,#tplImg1,#tplImg2,#tplImg3,#tplImg4,#tplImg5,#tplImg6")
     .forEach(inp=>inp.addEventListener("input", updateIframe));
-
-// Agregar más imágenes + títulos
-document.getElementById("addMoreImages").addEventListener("click", ()=>{
-    const newImgInput = document.createElement("input");
-    newImgInput.type = "text";
-    newImgInput.placeholder = "Nueva imagen";
-    newImgInput.classList.add("extra-img");
-    newImgInput.style.width="100%";
-    newImgInput.style.marginBottom="4px";
-
-    const newTitleInput = document.createElement("input");
-    newTitleInput.type = "text";
-    newTitleInput.placeholder = "Nombre del platillo";
-    newTitleInput.classList.add("extra-title");
-    newTitleInput.style.width="100%";
-    newTitleInput.style.marginBottom="4px";
-
-    const addBtn = document.getElementById("addMoreImages");
-    addBtn.insertAdjacentElement("beforebegin", newTitleInput);
-    addBtn.insertAdjacentElement("beforebegin", newImgInput);
-
-    newImgInput.addEventListener("input", updateIframe);
-    newTitleInput.addEventListener("input", updateIframe);
-});
-
 
   document.getElementById("tplCopy").addEventListener("click", ()=>{
     const doc = iframe.contentDocument || iframe.contentWindow.document;
@@ -848,6 +855,7 @@ if(navbarCard){
   </script>
 </body>
 </html>
+
 
 
 
