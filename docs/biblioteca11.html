@@ -304,44 +304,38 @@
   </div>
 
   <div id="templateContainer" style="border:1px solid #ccc; border-radius:10px; overflow:hidden; height:500px; position:relative;">
-    <iframe id="templateFrame" src="./plantilla1.html" style="width:100%;height:100%;border:none;"></iframe>
+    <iframe id="templateFrame" src="/templates/plantilla1.html" style="width:100%;height:100%;border:none;"></iframe>
   </div>
 
   <div style="margin-top:1em;">
     <label>Color de fondo</label>
     <input type="color" id="tplBgColor" style="width:100%;margin-bottom:8px;">
+
     <label>Logo URL</label>
     <input type="text" id="tplLogo" placeholder="URL de logo" style="width:100%;margin-bottom:8px;">
+
     <label>Texto Hero</label>
     <input type="text" id="tplHero" placeholder="Texto principal" style="width:100%;margin-bottom:8px;">
+
     <label>Descripción</label>
     <textarea id="tplDesc" placeholder="Descripción..." style="width:100%;margin-bottom:8px;"></textarea>
+
     <label>Horario</label>
     <input type="text" id="tplHorario" placeholder="Horario" style="width:100%;margin-bottom:8px;">
+
     <label>Teléfono</label>
     <input type="text" id="tplTel" placeholder="Teléfono" style="width:100%;margin-bottom:8px;">
+
     <label>Correo</label>
     <input type="text" id="tplCorreo" placeholder="Correo" style="width:100%;margin-bottom:8px;">
 
     <label>Galería de imágenes</label>
     <input type="text" id="tplImg1" placeholder="Imagen 1" style="width:100%;margin-bottom:4px;">
-    <label>Name</label>
-    <input type="text" id="tplImg1Title" placeholder="Name">
     <input type="text" id="tplImg2" placeholder="Imagen 2" style="width:100%;margin-bottom:4px;">
-    <label>Name</label>
-    <input type="text" id="tplImg2Title" placeholder="Name">
     <input type="text" id="tplImg3" placeholder="Imagen 3" style="width:100%;margin-bottom:4px;">
-    <label>Name</label>
-    <input type="text" id="tplImg3Title" placeholder="Name">
     <input type="text" id="tplImg4" placeholder="Imagen 4" style="width:100%;margin-bottom:4px;">
-    <label>Name</label>
-    <input type="text" id="tplImg4Title" placeholder="Name">
     <input type="text" id="tplImg5" placeholder="Imagen 5" style="width:100%;margin-bottom:4px;">
-    <label>Name</label>
-    <input type="text" id="tplImg5Title" placeholder="Name">
     <input type="text" id="tplImg6" placeholder="Imagen 6" style="width:100%;margin-bottom:8px;">
-    <label>Name</label>
-    <input type="text" id="tplImg6Title" placeholder="Name">
 
     <button type="button" id="addMoreImages" style="padding:6px 8px;margin-bottom:8px;">+ Agregar más fotos</button>
 
@@ -350,107 +344,101 @@
 </div>
 
   <script>
-     /* ================== PLANTILLAS ================== */
-  const tabButtons = document.querySelectorAll(".tab-btn");
-  const iframe = document.getElementById("templateFrame");
+    /* ================== EDITOR DE PLANTILLAS ================== */
+const tabButtons = document.querySelectorAll(".tab-btn");
+const iframe = document.getElementById("templateFrame");
 
-  tabButtons.forEach(btn => {
-    btn.addEventListener("click", ()=>{
-      iframe.src = `/templates/plantilla${btn.dataset.tab}.html`;
-    });
+/* Cambiar entre plantillas */
+tabButtons.forEach(btn => {
+  btn.addEventListener("click", () => {
+    iframe.src = `/templates/plantilla${btn.dataset.tab}.html`;
+    setTimeout(updateIframe, 500);
   });
-
-    function updateIframe(){
-    const doc = iframe.contentDocument || iframe.contentWindow.document;
-    if(!doc) return;
-
-    // Campos fijos
-    if(doc.getElementById("logo")) doc.getElementById("logo").src = document.getElementById("tplLogo").value;
-    if(doc.getElementById("hero")) doc.getElementById("hero").textContent = document.getElementById("tplHero").value;
-    if(doc.getElementById("desc")) doc.getElementById("desc").textContent = document.getElementById("tplDesc").value;
-    if(doc.getElementById("horario")) doc.getElementById("horario").textContent = document.getElementById("tplHorario").value;
-    if(doc.getElementById("tel")) doc.getElementById("tel").textContent = document.getElementById("tplTel").value;
-    if(doc.getElementById("correo")) doc.getElementById("correo").textContent = document.getElementById("tplCorreo").value;
-
-  function updateGallery(){
-    const gal = document.getElementById("galeria");
-    if(!gal) return;
-    gal.innerHTML = "";
-
-    // Imágenes fijas 1-6
-    for(let i=1;i<=6;i++){
-        const imgVal = document.getElementById("tplImg"+i)?.value.trim();
-        const titleVal = document.getElementById("tplImg"+i+"Title")?.value.trim() || "";
-        if(imgVal){
-            gal.innerHTML += `
-                <div class="gallery-item animate-on-scroll">
-                    <img src="${imgVal}" style="width:100px;margin:2px;">
-                    <div class="gallery-overlay"><h3>${titleVal}</h3></div>
-                </div>
-            `;
-        }
-    }
-
-    // Imágenes extras
-    const extraImgs = document.querySelectorAll(".extra-img");
-    extraImgs.forEach((inp,index)=>{
-        const val = inp.value.trim();
-        const titleInp = document.querySelectorAll(".extra-title")[index];
-        const titleVal = titleInp ? titleInp.value.trim() : "";
-        if(val){
-            gal.innerHTML += `
-                <div class="gallery-item animate-on-scroll">
-                    <img src="${val}" style="width:100px;margin:2px;">
-                    <div class="gallery-overlay"><h3>${titleVal}</h3></div>
-                </div>
-            `;
-        }
-    });
-}
-
-// Eventos de imágenes fijas
-for(let i=1;i<=6;i++){
-    const imgInput = document.getElementById("tplImg"+i);
-    const titleInput = document.getElementById("tplImg"+i+"Title");
-    if(imgInput) imgInput.addEventListener("input", updateGallery);
-    if(titleInput) titleInput.addEventListener("input", updateGallery);
-}
-
-// Botón para agregar imágenes extras
-document.getElementById("addMoreImages").addEventListener("click", ()=>{
-    const container = document.getElementById("addMoreImages");
-
-    const newImg = document.createElement("input");
-    newImg.type = "text";
-    newImg.placeholder = "Nueva imagen";
-    newImg.classList.add("extra-img");
-    newImg.style.width="100%";
-    newImg.style.marginBottom="4px";
-
-    const newTitle = document.createElement("input");
-    newTitle.type = "text";
-    newTitle.placeholder = "Nombre del platillo";
-    newTitle.classList.add("extra-title");
-    newTitle.style.width="100%";
-    newTitle.style.marginBottom="4px";
-
-    container.insertAdjacentElement("beforebegin", newTitle);
-    container.insertAdjacentElement("beforebegin", newImg);
-
-    newImg.addEventListener("input", updateGallery);
-    newTitle.addEventListener("input", updateGallery);
 });
 
-// Eventos de input
-document.querySelectorAll("#tplLogo,#tplHero,#tplDesc,#tplHorario,#tplTel,#tplCorreo,#tplImg1,#tplImg2,#tplImg3,#tplImg4,#tplImg5,#tplImg6")
-    .forEach(inp=>inp.addEventListener("input", updateIframe));
+/* Actualiza los campos dentro del iframe */
+function updateIframe() {
+  const doc = iframe.contentDocument || iframe.contentWindow.document;
+  if (!doc) return;
 
-  document.getElementById("tplCopy").addEventListener("click", ()=>{
-    const doc = iframe.contentDocument || iframe.contentWindow.document;
-    const html = doc.documentElement.outerHTML;
-    navigator.clipboard.writeText(html);
-    alert("HTML copiado al portapapeles ✅");
-  });
+  const bgColor = document.getElementById("tplBgColor").value;
+  if (bgColor) doc.body.style.backgroundColor = bgColor;
+
+  const logo = document.getElementById("tplLogo").value.trim();
+  if (doc.getElementById("logo")) doc.getElementById("logo").src = logo || "";
+
+  const hero = document.getElementById("tplHero").value.trim();
+  if (doc.getElementById("hero")) doc.getElementById("hero").textContent = hero;
+
+  const desc = document.getElementById("tplDesc").value.trim();
+  if (doc.getElementById("desc")) doc.getElementById("desc").textContent = desc;
+
+  const horario = document.getElementById("tplHorario").value.trim();
+  if (doc.getElementById("horario")) doc.getElementById("horario").textContent = horario;
+
+  const tel = document.getElementById("tplTel").value.trim();
+  if (doc.getElementById("tel")) doc.getElementById("tel").textContent = tel;
+
+  const correo = document.getElementById("tplCorreo").value.trim();
+  if (doc.getElementById("correo")) doc.getElementById("correo").textContent = correo;
+
+  /* Galería */
+  if (doc.getElementById("galeria")) {
+    const gal = doc.getElementById("galeria");
+    gal.innerHTML = "";
+
+    for (let i = 1; i <= 6; i++) {
+      const val = document.getElementById("tplImg" + i).value.trim();
+      if (val) gal.innerHTML += `<img src="${val}" style="width:100px;margin:2px;">`;
+    }
+
+    const extraInputs = document.querySelectorAll(".extra-img");
+    extraInputs.forEach(inp => {
+      if (inp.value.trim()) gal.innerHTML += `<img src="${inp.value.trim()}" style="width:100px;margin:2px;">`;
+    });
+  }
+}
+
+/* Vincular todos los inputs a la función de actualización */
+document.querySelectorAll(`
+  #tplBgColor,
+  #tplLogo,
+  #tplHero,
+  #tplDesc,
+  #tplHorario,
+  #tplTel,
+  #tplCorreo,
+  #tplImg1,
+  #tplImg2,
+  #tplImg3,
+  #tplImg4,
+  #tplImg5,
+  #tplImg6
+`).forEach(inp => inp.addEventListener("input", updateIframe));
+
+/* Agregar nuevos campos para imágenes extra */
+document.getElementById("addMoreImages").addEventListener("click", () => {
+  const newInput = document.createElement("input");
+  newInput.type = "text";
+  newInput.placeholder = "Nueva imagen";
+  newInput.classList.add("extra-img");
+  newInput.style.width = "100%";
+  newInput.style.marginBottom = "4px";
+  document.getElementById("addMoreImages").insertAdjacentElement("beforebegin", newInput);
+  newInput.addEventListener("input", updateIframe);
+});
+
+/* Copiar HTML completo */
+document.getElementById("tplCopy").addEventListener("click", () => {
+  const doc = iframe.contentDocument || iframe.contentWindow.document;
+  const html = doc.documentElement.outerHTML;
+  navigator.clipboard.writeText(html);
+  alert("HTML copiado al portapapeles ✅");
+});
+
+/* Esperar a que cargue el iframe */
+iframe.addEventListener("load", updateIframe);
+     // ===================================================================================================
     /* === CUSTOM ELEMENTS === */
     // menutech-navbar
     class MenutechNavbar extends HTMLElement {
@@ -855,6 +843,7 @@ if(navbarCard){
   </script>
 </body>
 </html>
+
 
 
 
