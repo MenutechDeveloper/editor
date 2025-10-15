@@ -364,41 +364,77 @@
     if (doc.getElementById("tel")) doc.getElementById("tel").textContent = document.getElementById("tplTel").value;
     if (doc.getElementById("correo")) doc.getElementById("correo").textContent = document.getElementById("tplCorreo").value;
 
-    // Actualizar galería
-    if (doc.getElementById("galeria")) {
-      const gal = doc.getElementById("galeria");
-      gal.innerHTML = "";
+   
+  // ========== GALERÍA ==========
+  const gal = doc.getElementById("galeria");
+  if (gal) {
+    // Primero limpiamos todo
+    gal.innerHTML = "";
 
-      // Galería estándar
-      for (let i = 1; i <= 6; i++) {
-        const val = document.getElementById("tplImg" + i).value.trim();
-        if (val) gal.innerHTML += `<img src="${val}" style="width:100px;margin:2px;">`;
+    // Galería base (6 imágenes)
+    for (let i = 1; i <= 6; i++) {
+      const val = document.getElementById("tplImg" + i).value.trim();
+      if (val) {
+        const img = doc.createElement("img");
+        img.src = val;
+        img.style.width = "100px";
+        img.style.margin = "2px";
+        gal.appendChild(img);
       }
-
-      // Galería extra
-      const extraInputs = document.querySelectorAll(".extra-img");
-      extraInputs.forEach(inp => {
-        if (inp.value.trim()) gal.innerHTML += `<img src="${inp.value.trim()}" style="width:100px;margin:2px;">`;
-      });
     }
+
+    // Imágenes extra
+    const extraInputs = document.querySelectorAll(".extra-img");
+    extraInputs.forEach(inp => {
+      if (inp.value.trim()) {
+        const img = doc.createElement("img");
+        img.src = inp.value.trim();
+        img.style.width = "100px";
+        img.style.margin = "2px";
+        gal.appendChild(img);
+      }
+    });
+  } else {
+    // Si la plantilla NO tiene #galeria, reemplazamos las imágenes directamente
+    const imgs = doc.querySelectorAll("img");
+    let imgIndex = 0;
+
+    // Lista de URLs introducidas
+    const urls = [];
+    for (let i = 1; i <= 6; i++) {
+      const val = document.getElementById("tplImg" + i).value.trim();
+      if (val) urls.push(val);
+    }
+    document.querySelectorAll(".extra-img").forEach(inp => {
+      if (inp.value.trim()) urls.push(inp.value.trim());
+    });
+
+    // Sustituir las existentes
+    imgs.forEach((img) => {
+      if (urls[imgIndex]) {
+        img.src = urls[imgIndex];
+        imgIndex++;
+      }
+    });
   }
+}
 
   // Inputs principales
   document.querySelectorAll(
     "#tplBgColor,#tplLogo,#tplHero,#tplDesc,#tplHorario,#tplTel,#tplCorreo,#tplImg1,#tplImg2,#tplImg3,#tplImg4,#tplImg5,#tplImg6"
   ).forEach(inp => inp.addEventListener("input", updateIframe));
 
-  // Agregar imágenes extra ilimitadas
-  document.getElementById("addMoreImages").addEventListener("click", () => {
-    const newInput = document.createElement("input");
-    newInput.type = "text";
-    newInput.placeholder = "Nueva imagen";
-    newInput.classList.add("extra-img");
-    newInput.style.width = "100%";
-    newInput.style.marginBottom = "4px";
-    document.getElementById("addMoreImages").insertAdjacentElement("beforebegin", newInput);
-    newInput.addEventListener("input", updateIframe);
-  });
+ // Botón para agregar imágenes extra
+document.getElementById("addMoreImages").addEventListener("click", () => {
+  const newInput = document.createElement("input");
+  newInput.type = "text";
+  newInput.placeholder = "Nueva imagen";
+  newInput.classList.add("extra-img");
+  newInput.style.width = "100%";
+  newInput.style.marginBottom = "4px";
+  document.getElementById("addMoreImages").insertAdjacentElement("beforebegin", newInput);
+  newInput.addEventListener("input", updateIframe);
+});
 
   // Copiar HTML completo del iframe
   document.getElementById("tplCopy").addEventListener("click", () => {
@@ -812,6 +848,7 @@ if(navbarCard){
   </script>
 </body>
 </html>
+
 
 
 
