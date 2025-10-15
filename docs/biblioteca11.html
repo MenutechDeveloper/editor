@@ -294,7 +294,7 @@
 </div>
 
   </div>
- <!-- ==================== EDITOR DE PLANTILLAS ==================== -->
+<!-- ==================== EDITOR DE PLANTILLAS ==================== -->
 <h2 style="margin-top:3em; text-align:center;">📄 Editor de Plantillas</h2>
 <div style="max-width:960px;margin:1em auto;">
   <div style="display:flex; gap:10px; justify-content:center; margin-bottom:1em;">
@@ -382,10 +382,11 @@ function updateIframe() {
 
   // Actualizar logo y textos
   const logoVal = document.getElementById("tplLogo").value;
-  if (doc.getElementById("logo") && logoVal !== undefined) doc.getElementById("logo").src = logoVal;
+  if (doc.getElementById("logo")) doc.getElementById("logo").src = logoVal;
+  if (doc.getElementById("logoHero")) doc.getElementById("logoHero").src = logoVal;
 
   const heroVal = document.getElementById("tplHero").value;
-  if (doc.getElementById("hero") && heroVal !== undefined) doc.getElementById("hero").textContent = heroVal;
+  if (doc.getElementById("hero")) doc.getElementById("hero").textContent = heroVal;
 
   if (doc.getElementById("desc")) doc.getElementById("desc").textContent = document.getElementById("tplDesc").value;
   if (doc.getElementById("horario")) doc.getElementById("horario").textContent = document.getElementById("tplHorario").value;
@@ -393,7 +394,6 @@ function updateIframe() {
   if (doc.getElementById("correo")) doc.getElementById("correo").textContent = document.getElementById("tplCorreo").value;
 
   /* ========== SUSTITUIR IMÁGENES Y TÍTULOS POR ID ========== */
-  // Sustituye las imágenes y títulos fijas (1..6)
   for (let i = 1; i <= 6; i++) {
     const imgInput = document.getElementById("tplImg" + i);
     const titleInput = document.getElementById("tplTitle" + i);
@@ -405,7 +405,7 @@ function updateIframe() {
     if (titleEl && titleInput) titleEl.textContent = titleInput.value.trim();
   }
 
-  // Extras: cada extra-pair corresponde a img7/title7, img8/title8, ...
+  // Extras: img7/title7, img8/title8, ...
   const extraPairs = document.querySelectorAll(".extra-pair");
   let extraIndex = 7;
   extraPairs.forEach(pair => {
@@ -452,19 +452,7 @@ document.getElementById("addMoreImages").addEventListener("click", () => {
   wrapper.appendChild(imgInput);
   wrapper.appendChild(titleInput);
 
-  document.getElementById("addMoreImages").insertAdjacentElement("beforebegin", wrapper);
-
-  imgInput.addEventListener("input", updateIframe);
-  titleInput.addEventListener("input", updateIframe);
-});
-
-// Copiar HTML completo del iframe
-document.getElementById("tplCopy").addEventListener("click", () => {
-  const doc = iframe.contentDocument || iframe.contentWindow.document;
-  const html = doc.documentElement.outerHTML;
-  navigator.clipboard.writeText(html);
-  alert("HTML copiado al portapapeles ✅");
-});
+  document.getElementById("addMoreImages").
      // ===================================================================================================
     /* === CUSTOM ELEMENTS === */
     // menutech-navbar
@@ -870,6 +858,7 @@ if(navbarCard){
   </script>
 </body>
 </html>
+
 
 
 
