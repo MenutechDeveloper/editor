@@ -323,13 +323,37 @@
     <label>Correo</label>
     <input type="text" id="tplCorreo" placeholder="Correo" style="width:100%;margin-bottom:8px;">
 
-    <label>Galería de imágenes</label>
-    <input type="text" id="tplImg1" placeholder="Imagen 1" style="width:100%;margin-bottom:4px;">
-    <input type="text" id="tplImg2" placeholder="Imagen 2" style="width:100%;margin-bottom:4px;">
-    <input type="text" id="tplImg3" placeholder="Imagen 3" style="width:100%;margin-bottom:4px;">
-    <input type="text" id="tplImg4" placeholder="Imagen 4" style="width:100%;margin-bottom:4px;">
-    <input type="text" id="tplImg5" placeholder="Imagen 5" style="width:100%;margin-bottom:4px;">
-    <input type="text" id="tplImg6" placeholder="Imagen 6" style="width:100%;margin-bottom:8px;">
+    <label style="display:block;margin-top:8px;">Galería de imágenes (y títulos)</label>
+
+    <div class="img-title-pair">
+      <input type="text" id="tplImg1" placeholder="Imagen 1" style="width:100%;margin-bottom:4px;">
+      <input type="text" id="tplTitle1" placeholder="Título 1" style="width:100%;margin-bottom:8px;">
+    </div>
+
+    <div class="img-title-pair">
+      <input type="text" id="tplImg2" placeholder="Imagen 2" style="width:100%;margin-bottom:4px;">
+      <input type="text" id="tplTitle2" placeholder="Título 2" style="width:100%;margin-bottom:8px;">
+    </div>
+
+    <div class="img-title-pair">
+      <input type="text" id="tplImg3" placeholder="Imagen 3" style="width:100%;margin-bottom:4px;">
+      <input type="text" id="tplTitle3" placeholder="Título 3" style="width:100%;margin-bottom:8px;">
+    </div>
+
+    <div class="img-title-pair">
+      <input type="text" id="tplImg4" placeholder="Imagen 4" style="width:100%;margin-bottom:4px;">
+      <input type="text" id="tplTitle4" placeholder="Título 4" style="width:100%;margin-bottom:8px;">
+    </div>
+
+    <div class="img-title-pair">
+      <input type="text" id="tplImg5" placeholder="Imagen 5" style="width:100%;margin-bottom:4px;">
+      <input type="text" id="tplTitle5" placeholder="Título 5" style="width:100%;margin-bottom:8px;">
+    </div>
+
+    <div class="img-title-pair">
+      <input type="text" id="tplImg6" placeholder="Imagen 6" style="width:100%;margin-bottom:4px;">
+      <input type="text" id="tplTitle6" placeholder="Título 6" style="width:100%;margin-bottom:8px;">
+    </div>
 
     <button type="button" id="addMoreImages" style="padding:6px 8px;margin-bottom:8px;">+ Agregar más fotos</button>
 
@@ -339,110 +363,108 @@
 
   <script>
 /* ================== PLANTILLAS ================== */
-  const tabButtons = document.querySelectorAll(".tab-btn");
-  const iframe = document.getElementById("templateFrame");
+const tabButtons = document.querySelectorAll(".tab-btn");
+const iframe = document.getElementById("templateFrame");
 
-  tabButtons.forEach(btn => {
-    btn.addEventListener("click", () => {
-      iframe.src = `./plantilla${btn.dataset.tab}.html`;
-    });
+tabButtons.forEach(btn => {
+  btn.addEventListener("click", () => {
+    iframe.src = `./plantilla${btn.dataset.tab}.html`;
   });
-
-  function updateIframe() {
-    const doc = iframe.contentDocument || iframe.contentWindow.document;
-    if (!doc) return;
-
-    // Cambiar color de fondo
-    const bgColor = document.getElementById("tplBgColor").value;
-    if (bgColor) doc.body.style.backgroundColor = bgColor;
-
-    // Actualizar logo y textos
-    if (doc.getElementById("logo")) doc.getElementById("logo").src = document.getElementById("tplLogo").value;
-    if (doc.getElementById("hero")) doc.getElementById("hero").textContent = document.getElementById("tplHero").value;
-    if (doc.getElementById("desc")) doc.getElementById("desc").textContent = document.getElementById("tplDesc").value;
-    if (doc.getElementById("horario")) doc.getElementById("horario").textContent = document.getElementById("tplHorario").value;
-    if (doc.getElementById("tel")) doc.getElementById("tel").textContent = document.getElementById("tplTel").value;
-    if (doc.getElementById("correo")) doc.getElementById("correo").textContent = document.getElementById("tplCorreo").value;
-
-   
-  // ========== GALERÍA ==========
-  const gal = doc.getElementById("galeria");
-  if (gal) {
-    // Primero limpiamos todo
-    gal.innerHTML = "";
-
-    // Galería base (6 imágenes)
-    for (let i = 1; i <= 6; i++) {
-      const val = document.getElementById("tplImg" + i).value.trim();
-      if (val) {
-        const img = doc.createElement("img");
-        img.src = val;
-        img.style.width = "100px";
-        img.style.margin = "2px";
-        gal.appendChild(img);
-      }
-    }
-
-    // Imágenes extra
-    const extraInputs = document.querySelectorAll(".extra-img");
-    extraInputs.forEach(inp => {
-      if (inp.value.trim()) {
-        const img = doc.createElement("img");
-        img.src = inp.value.trim();
-        img.style.width = "100px";
-        img.style.margin = "2px";
-        gal.appendChild(img);
-      }
-    });
-  } else {
-    // Si la plantilla NO tiene #galeria, reemplazamos las imágenes directamente
-    const imgs = doc.querySelectorAll("img");
-    let imgIndex = 0;
-
-    // Lista de URLs introducidas
-    const urls = [];
-    for (let i = 1; i <= 6; i++) {
-      const val = document.getElementById("tplImg" + i).value.trim();
-      if (val) urls.push(val);
-    }
-    document.querySelectorAll(".extra-img").forEach(inp => {
-      if (inp.value.trim()) urls.push(inp.value.trim());
-    });
-
-    // Sustituir las existentes
-    imgs.forEach((img) => {
-      if (urls[imgIndex]) {
-        img.src = urls[imgIndex];
-        imgIndex++;
-      }
-    });
-  }
-}
-
-  // Inputs principales
-  document.querySelectorAll(
-    "#tplBgColor,#tplLogo,#tplHero,#tplDesc,#tplHorario,#tplTel,#tplCorreo,#tplImg1,#tplImg2,#tplImg3,#tplImg4,#tplImg5,#tplImg6"
-  ).forEach(inp => inp.addEventListener("input", updateIframe));
-
- // Botón para agregar imágenes extra
-document.getElementById("addMoreImages").addEventListener("click", () => {
-  const newInput = document.createElement("input");
-  newInput.type = "text";
-  newInput.placeholder = "Nueva imagen";
-  newInput.classList.add("extra-img");
-  newInput.style.width = "100%";
-  newInput.style.marginBottom = "4px";
-  document.getElementById("addMoreImages").insertAdjacentElement("beforebegin", newInput);
-  newInput.addEventListener("input", updateIframe);
 });
 
-  // Copiar HTML completo del iframe
-  document.getElementById("tplCopy").addEventListener("click", () => {
-    const doc = iframe.contentDocument || iframe.contentWindow.document;
-    const html = doc.documentElement.outerHTML;
-    navigator.clipboard.writeText(html);
-    alert("HTML copiado al portapapeles ✅");
+function updateIframe() {
+  const doc = iframe.contentDocument || iframe.contentWindow.document;
+  if (!doc) return;
+
+  // Cambiar color de fondo
+  const bgColor = document.getElementById("tplBgColor").value;
+  if (bgColor) doc.body.style.backgroundColor = bgColor;
+
+  // Actualizar logo y textos
+  const logoVal = document.getElementById("tplLogo").value;
+  if (doc.getElementById("logo") && logoVal !== undefined) doc.getElementById("logo").src = logoVal;
+
+  const heroVal = document.getElementById("tplHero").value;
+  if (doc.getElementById("hero") && heroVal !== undefined) doc.getElementById("hero").textContent = heroVal;
+
+  if (doc.getElementById("desc")) doc.getElementById("desc").textContent = document.getElementById("tplDesc").value;
+  if (doc.getElementById("horario")) doc.getElementById("horario").textContent = document.getElementById("tplHorario").value;
+  if (doc.getElementById("tel")) doc.getElementById("tel").textContent = document.getElementById("tplTel").value;
+  if (doc.getElementById("correo")) doc.getElementById("correo").textContent = document.getElementById("tplCorreo").value;
+
+  /* ========== SUSTITUIR IMÁGENES Y TÍTULOS POR ID ========== */
+  // Sustituye las imágenes y títulos fijas (1..6)
+  for (let i = 1; i <= 6; i++) {
+    const imgInput = document.getElementById("tplImg" + i);
+    const titleInput = document.getElementById("tplTitle" + i);
+
+    const imgEl = doc.getElementById("img" + i);
+    const titleEl = doc.getElementById("title" + i);
+
+    if (imgEl && imgInput && imgInput.value.trim()) imgEl.src = imgInput.value.trim();
+    if (titleEl && titleInput) titleEl.textContent = titleInput.value.trim();
+  }
+
+  // Extras: cada extra-pair corresponde a img7/title7, img8/title8, ...
+  const extraPairs = document.querySelectorAll(".extra-pair");
+  let extraIndex = 7;
+  extraPairs.forEach(pair => {
+    const imgInp = pair.querySelector(".extra-img");
+    const titleInp = pair.querySelector(".extra-title");
+    const imgEl = doc.getElementById("img" + extraIndex);
+    const titleEl = doc.getElementById("title" + extraIndex);
+
+    if (imgEl && imgInp && imgInp.value.trim()) imgEl.src = imgInp.value.trim();
+    if (titleEl && titleInp) titleEl.textContent = titleInp.value.trim();
+
+    extraIndex++;
   });
+}
+
+// Conectar inputs existentes
+function bindExistingInputs() {
+  document.querySelectorAll(
+    "#tplBgColor,#tplLogo,#tplHero,#tplDesc,#tplHorario,#tplTel,#tplCorreo,#tplImg1,#tplImg2,#tplImg3,#tplImg4,#tplImg5,#tplImg6,#tplTitle1,#tplTitle2,#tplTitle3,#tplTitle4,#tplTitle5,#tplTitle6"
+  ).forEach(inp => inp.addEventListener("input", updateIframe));
+}
+bindExistingInputs();
+
+// Botón para agregar imágenes extra (crea par pareja img+title)
+document.getElementById("addMoreImages").addEventListener("click", () => {
+  const wrapper = document.createElement("div");
+  wrapper.classList.add("extra-pair");
+  wrapper.style.marginBottom = "8px";
+
+  const imgInput = document.createElement("input");
+  imgInput.type = "text";
+  imgInput.placeholder = "Nueva imagen (URL)";
+  imgInput.classList.add("extra-img");
+  imgInput.style.width = "100%";
+  imgInput.style.marginBottom = "4px";
+
+  const titleInput = document.createElement("input");
+  titleInput.type = "text";
+  titleInput.placeholder = "Título de la imagen";
+  titleInput.classList.add("extra-title");
+  titleInput.style.width = "100%";
+  titleInput.style.marginBottom = "4px";
+
+  wrapper.appendChild(imgInput);
+  wrapper.appendChild(titleInput);
+
+  document.getElementById("addMoreImages").insertAdjacentElement("beforebegin", wrapper);
+
+  imgInput.addEventListener("input", updateIframe);
+  titleInput.addEventListener("input", updateIframe);
+});
+
+// Copiar HTML completo del iframe
+document.getElementById("tplCopy").addEventListener("click", () => {
+  const doc = iframe.contentDocument || iframe.contentWindow.document;
+  const html = doc.documentElement.outerHTML;
+  navigator.clipboard.writeText(html);
+  alert("HTML copiado al portapapeles ✅");
+});
      // ===================================================================================================
     /* === CUSTOM ELEMENTS === */
     // menutech-navbar
@@ -848,6 +870,7 @@ if(navbarCard){
   </script>
 </body>
 </html>
+
 
 
 
