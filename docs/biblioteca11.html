@@ -294,7 +294,7 @@
 </div>
 
   </div>
-  <!-- ==================== EDITOR DE PLANTILLAS ==================== -->
+ <!-- ==================== EDITOR DE PLANTILLAS ==================== -->
 <h2 style="margin-top:3em; text-align:center;">📄 Editor de Plantillas</h2>
 <div style="max-width:960px;margin:1em auto;">
   <div style="display:flex; gap:10px; justify-content:center; margin-bottom:1em;">
@@ -304,28 +304,22 @@
   </div>
 
   <div id="templateContainer" style="border:1px solid #ccc; border-radius:10px; overflow:hidden; height:500px; position:relative;">
-    <iframe id="templateFrame" src="/templates/plantilla1.html" style="width:100%;height:100%;border:none;"></iframe>
+    <iframe id="templateFrame" src="./plantilla1.html" style="width:100%;height:100%;border:none;"></iframe>
   </div>
 
   <div style="margin-top:1em;">
     <label>Color de fondo</label>
     <input type="color" id="tplBgColor" style="width:100%;margin-bottom:8px;">
-
     <label>Logo URL</label>
     <input type="text" id="tplLogo" placeholder="URL de logo" style="width:100%;margin-bottom:8px;">
-
     <label>Texto Hero</label>
     <input type="text" id="tplHero" placeholder="Texto principal" style="width:100%;margin-bottom:8px;">
-
     <label>Descripción</label>
     <textarea id="tplDesc" placeholder="Descripción..." style="width:100%;margin-bottom:8px;"></textarea>
-
     <label>Horario</label>
     <input type="text" id="tplHorario" placeholder="Horario" style="width:100%;margin-bottom:8px;">
-
     <label>Teléfono</label>
     <input type="text" id="tplTel" placeholder="Teléfono" style="width:100%;margin-bottom:8px;">
-
     <label>Correo</label>
     <input type="text" id="tplCorreo" placeholder="Correo" style="width:100%;margin-bottom:8px;">
 
@@ -344,101 +338,75 @@
 </div>
 
   <script>
-    /* ================== EDITOR DE PLANTILLAS ================== */
-const tabButtons = document.querySelectorAll(".tab-btn");
-const iframe = document.getElementById("templateFrame");
+/* ================== PLANTILLAS ================== */
+  const tabButtons = document.querySelectorAll(".tab-btn");
+  const iframe = document.getElementById("templateFrame");
 
-/* Cambiar entre plantillas */
-tabButtons.forEach(btn => {
-  btn.addEventListener("click", () => {
-    iframe.src = `/templates/plantilla${btn.dataset.tab}.html`;
-    setTimeout(updateIframe, 500);
-  });
-});
-
-/* Actualiza los campos dentro del iframe */
-function updateIframe() {
-  const doc = iframe.contentDocument || iframe.contentWindow.document;
-  if (!doc) return;
-
-  const bgColor = document.getElementById("tplBgColor").value;
-  if (bgColor) doc.body.style.backgroundColor = bgColor;
-  
-
-  const logo = document.getElementById("tplLogo").value.trim();
-  if (doc.getElementById("logo")) doc.getElementById("logo").src = logo || "";
-
-  const hero = document.getElementById("tplHero").value.trim();
-  if (doc.getElementById("hero")) doc.getElementById("hero").textContent = hero;
-
-  const desc = document.getElementById("tplDesc").value.trim();
-  if (doc.getElementById("desc")) doc.getElementById("desc").textContent = desc;
-
-  const horario = document.getElementById("tplHorario").value.trim();
-  if (doc.getElementById("horario")) doc.getElementById("horario").textContent = horario;
-
-  const tel = document.getElementById("tplTel").value.trim();
-  if (doc.getElementById("tel")) doc.getElementById("tel").textContent = tel;
-
-  const correo = document.getElementById("tplCorreo").value.trim();
-  if (doc.getElementById("correo")) doc.getElementById("correo").textContent = correo;
-
-  /* Galería */
-  if (doc.getElementById("galeria")) {
-    const gal = doc.getElementById("galeria");
-    gal.innerHTML = "";
-
-    for (let i = 1; i <= 6; i++) {
-      const val = document.getElementById("tplImg" + i).value.trim();
-      if (val) gal.innerHTML += `<img src="${val}" style="width:100px;margin:2px;">`;
-    }
-
-    const extraInputs = document.querySelectorAll(".extra-img");
-    extraInputs.forEach(inp => {
-      if (inp.value.trim()) gal.innerHTML += `<img src="${inp.value.trim()}" style="width:100px;margin:2px;">`;
+  tabButtons.forEach(btn => {
+    btn.addEventListener("click", () => {
+      iframe.src = `./plantilla${btn.dataset.tab}.html`;
     });
+  });
+
+  function updateIframe() {
+    const doc = iframe.contentDocument || iframe.contentWindow.document;
+    if (!doc) return;
+
+    // Cambiar color de fondo
+    const bgColor = document.getElementById("tplBgColor").value;
+    if (bgColor) doc.body.style.backgroundColor = bgColor;
+
+    // Actualizar logo y textos
+    if (doc.getElementById("logo")) doc.getElementById("logo").src = document.getElementById("tplLogo").value;
+    if (doc.getElementById("hero")) doc.getElementById("hero").textContent = document.getElementById("tplHero").value;
+    if (doc.getElementById("desc")) doc.getElementById("desc").textContent = document.getElementById("tplDesc").value;
+    if (doc.getElementById("horario")) doc.getElementById("horario").textContent = document.getElementById("tplHorario").value;
+    if (doc.getElementById("tel")) doc.getElementById("tel").textContent = document.getElementById("tplTel").value;
+    if (doc.getElementById("correo")) doc.getElementById("correo").textContent = document.getElementById("tplCorreo").value;
+
+    // Actualizar galería
+    if (doc.getElementById("galeria")) {
+      const gal = doc.getElementById("galeria");
+      gal.innerHTML = "";
+
+      // Galería estándar
+      for (let i = 1; i <= 6; i++) {
+        const val = document.getElementById("tplImg" + i).value.trim();
+        if (val) gal.innerHTML += `<img src="${val}" style="width:100px;margin:2px;">`;
+      }
+
+      // Galería extra
+      const extraInputs = document.querySelectorAll(".extra-img");
+      extraInputs.forEach(inp => {
+        if (inp.value.trim()) gal.innerHTML += `<img src="${inp.value.trim()}" style="width:100px;margin:2px;">`;
+      });
+    }
   }
-}
 
-/* Vincular todos los inputs a la función de actualización */
-document.querySelectorAll(`
-  #tplBgColor,
-  #tplLogo,
-  #tplHero,
-  #tplDesc,
-  #tplHorario,
-  #tplTel,
-  #tplCorreo,
-  #tplImg1,
-  #tplImg2,
-  #tplImg3,
-  #tplImg4,
-  #tplImg5,
-  #tplImg6
-`).forEach(inp => inp.addEventListener("input", updateIframe));
+  // Inputs principales
+  document.querySelectorAll(
+    "#tplBgColor,#tplLogo,#tplHero,#tplDesc,#tplHorario,#tplTel,#tplCorreo,#tplImg1,#tplImg2,#tplImg3,#tplImg4,#tplImg5,#tplImg6"
+  ).forEach(inp => inp.addEventListener("input", updateIframe));
 
-/* Agregar nuevos campos para imágenes extra */
-document.getElementById("addMoreImages").addEventListener("click", () => {
-  const newInput = document.createElement("input");
-  newInput.type = "text";
-  newInput.placeholder = "Nueva imagen";
-  newInput.classList.add("extra-img");
-  newInput.style.width = "100%";
-  newInput.style.marginBottom = "4px";
-  document.getElementById("addMoreImages").insertAdjacentElement("beforebegin", newInput);
-  newInput.addEventListener("input", updateIframe);
-});
+  // Agregar imágenes extra ilimitadas
+  document.getElementById("addMoreImages").addEventListener("click", () => {
+    const newInput = document.createElement("input");
+    newInput.type = "text";
+    newInput.placeholder = "Nueva imagen";
+    newInput.classList.add("extra-img");
+    newInput.style.width = "100%";
+    newInput.style.marginBottom = "4px";
+    document.getElementById("addMoreImages").insertAdjacentElement("beforebegin", newInput);
+    newInput.addEventListener("input", updateIframe);
+  });
 
-/* Copiar HTML completo */
-document.getElementById("tplCopy").addEventListener("click", () => {
-  const doc = iframe.contentDocument || iframe.contentWindow.document;
-  const html = doc.documentElement.outerHTML;
-  navigator.clipboard.writeText(html);
-  alert("HTML copiado al portapapeles ✅");
-});
-
-/* Esperar a que cargue el iframe */
-iframe.addEventListener("load", updateIframe);
+  // Copiar HTML completo del iframe
+  document.getElementById("tplCopy").addEventListener("click", () => {
+    const doc = iframe.contentDocument || iframe.contentWindow.document;
+    const html = doc.documentElement.outerHTML;
+    navigator.clipboard.writeText(html);
+    alert("HTML copiado al portapapeles ✅");
+  });
      // ===================================================================================================
     /* === CUSTOM ELEMENTS === */
     // menutech-navbar
@@ -844,6 +812,7 @@ if(navbarCard){
   </script>
 </body>
 </html>
+
 
 
 
